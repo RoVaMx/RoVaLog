@@ -65,11 +65,11 @@ classDiagram
     namespace Package_Presentation {
         class RoVa_Log {
             <<Protocol>>
-            logDebug(...)
-            logInfo(...)
-            logWarning(...)
-            logError(...)
-            logVerbose(...)
+            logDebug(msg:String)
+            logInfo(msg:String)
+            logWarning(msg:String)
+            logError(msg:String)
+            logVerbose(msg:String)
         }
         class RoVa_LogFormatter {
             logData: Array[RoVa_LogData]$
