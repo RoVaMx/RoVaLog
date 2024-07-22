@@ -187,11 +187,39 @@ jobs:
         run: |
          echo "Running"
 
-  Job_B_Fail:
-    name: Code Coverage Fail
+  Job_B_1_Fail:
+    name: Lines Coverage Fail
     runs-on: RoVaMx
     needs: [
-      Job_B
+      Job_B_1
+    ]
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+
+      - name: Run unit test
+        shell: bash
+        run: |
+         echo "Running"
+
+  Job_B_2_Fail:
+    name: Function Coverage Fail
+    runs-on: RoVaMx
+    needs: [
+      Job_B_2
+    ]
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+
+      - name: Run unit test
+        shell: bash
+        run: |
+         echo "Running"
+
+  Job_B_3_Fail:
+    name: Instantiations Coverage Fail
+    runs-on: RoVaMx
+    needs: [
+      Job_B_3
     ]
     if: ${{ always() && contains(needs.*.result, 'failure') }}
     steps:
