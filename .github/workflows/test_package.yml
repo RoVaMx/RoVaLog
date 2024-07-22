@@ -40,8 +40,8 @@ jobs:
           path: fastlane/build/code_coverage.json
           if-no-files-found: error
 
-  Job_B:
-    name: Code Coverage Report
+  Job_B_1:
+    name: Lines Code Coverage
     runs-on: RoVaMx
     needs: [
       Job_A
@@ -58,11 +58,8 @@ jobs:
         with:
           name: code_coverage_artifact
           path: fastlane
-      
-      #
-      # Validation
-      #
-      - name: Prepare Code Coderage Package
+
+      - name: Validate 
         shell: bash
         run: |
           ls -la fastlane
@@ -78,6 +75,30 @@ jobs:
           else
             echo -e "\n\t\t PASSED ✅"
           fi
+
+  Job_B_2:
+    name: Function Code Coverage
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Download Code Coverage Package Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: code_coverage_artifact
+          path: fastlane
+
+      - name: Validate 
+        shell: bash
+        run: |
+          ls -la fastlane
           echo "FUNCTIONS"
           func_count=$(jq '.data[0].totals.functions.count' fastlane/code_coverage.json)
           func_covered=$(jq '.data[0].totals.functions.covered' fastlane/code_coverage.json)
@@ -91,12 +112,50 @@ jobs:
             echo -e "\n\t\t PASSED ✅"
           fi
 
+  Job_B_3:
+    name: Instantiations Code Coverage
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Download Code Coverage Package Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: code_coverage_artifact
+          path: fastlane
+
+      - name: Validate 
+        shell: bash
+        run: |
+          ls -la fastlane
+          echo "FUNCTIONS"
+          inst_count=$(jq '.data[0].totals.instantiations.count' fastlane/code_coverage.json)
+          inst_covered=$(jq '.data[0].totals.instantiations.covered' fastlane/code_coverage.json)
+          inst_percent=$(jq '.data[0].totals.instantiations.percent' fastlane/code_coverage.json)
+          echo -e "\t count  : $inst_count"
+          echo -e "\t covered: $inst_covered"
+          echo -e "\t percent: $inst_percent"
+          if [ "$inst_percent" -lt "90" ]; then
+            echo -e "\t\t FAILED ❌"
+          else
+            echo -e "\n\t\t PASSED ✅"
+          fi
+
 
   Job_Completition:
     name: Completition
     runs-on: RoVaMx
     needs: [
-      Job_B
+      Job_B_1,
+      Job_B_2,
+      Job_B_3
     ]
     steps:
 
