@@ -65,14 +65,14 @@ classDiagram
     namespace Package_Presentation {
         class RoVa_Log {
             <<Protocol>>
-            logDebug()
-            logInfo()
-            logWarning()
-            logError()
-            logVerbose()
+            logDebug(...)
+            logInfo(...)
+            logWarning(...)
+            logError(...)
+            logVerbose(...)
         }
         class RoVa_LogFormatter {
-            enabled: Bool$
+            logData: Array[RoVa_LogData]$
             logLevel: Array[RoVa_LogLevel]$
         }
     }
