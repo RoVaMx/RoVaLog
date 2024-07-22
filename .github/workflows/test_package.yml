@@ -1,0 +1,12 @@
+name: Test Package
+on:
+  workflow_dispatch:
+jobs:
+  DownloadCertificates:
+    runs-on: self-hosted
+    steps:
+
+      - name: Testing
+        shell: bash
+        run: |
+          echo "Testing"
