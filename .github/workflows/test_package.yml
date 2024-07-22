@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: |
           ls -la fastlane/build/x86_64-apple-macosx/debug/codecov
-          cp fastlane/build/x86_64-apple-macosx/debug/codecov/RoVaLog.json fastlane/build/code_coverage.json
+          cp fastlane/build/x86_64-apple-macosx/debug/codecov/RoVa-Log.json fastlane/build/code_coverage.json
           ls -la fastlane/build
 
       - name: Upload Code Coverage Package  Artifact
