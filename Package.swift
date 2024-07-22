@@ -1,13 +1,5 @@
-//
-//  Package.swift
-//
-//
-//  Created by Francisco Romero on 22/07/24.
-//
-//  NOTES:
-//         - swift-tools-version: 5.10
-//         - The swift-tools-version declares the minimum version of Swift required to build this
-//           package.
+// swift-tools-version: 5.10
+// The swift-tools-version declares the minimum version of Swift required to build package.
 
 import PackageDescription
 
