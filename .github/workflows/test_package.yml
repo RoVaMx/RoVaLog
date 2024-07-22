@@ -1,12 +1,143 @@
+#
+# Github Setup
+#
 name: Test Package
+
 on:
   workflow_dispatch:
+
 jobs:
-  DownloadCertificates:
-    runs-on: self-hosted
+
+  #
+  # Jobs
+  #
+  Job_A:
+    name: Run Unit Test
+    runs-on: RoVaMx
     steps:
 
-      - name: Testing
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Run unit test
         shell: bash
         run: |
-          echo "Testing"
+         fastlane test_package
+
+      - name: Prepare Code Coderage Package
+        shell: bash
+        run: |
+          ls -la fastlane/build/x86_64-apple-macosx/debug/codecov
+          cp fastlane/build/x86_64-apple-macosx/debug/codecov/RoVaLog.json fastlane/build/code_coverage.json
+          ls -la fastlane/build
+
+      - name: Upload Code Coverage Package  Artifact
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: code_coverage_artifact
+          path: fastlane/build/code_coverage.json
+          if-no-files-found: error
+
+  Job_B:
+    name: Code Coverage Report
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Download Code Coverage Package Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: code_coverage_artifact
+          path: fastlane
+      
+      #
+      # Validation
+      #
+      - name: Prepare Code Coderage Package
+        shell: bash
+        run: |
+          ls -la fastlane
+          echo "LINES"
+          lines_count=$(jq '.data[0].totals.lines.count' fastlane/code_coverage.json)
+          lines_covered=$(jq '.data[0].totals.lines.covered' fastlane/code_coverage.json)
+          lines_percent=$(jq '.data[0].totals.lines.percent' fastlane/code_coverage.json)
+          echo -e "\t count  : $lines_count"
+          echo -e "\t covered: $lines_covered"
+          echo -e "\t percent: $lines_percent"
+          if [ "$lines_percent" -lt "101" ]; then
+            echo -e "\n\t\t FAILED ❌"
+          else
+            echo -e "\n\t\t PASSED ✅"
+          fi
+          echo "FUNCTIONS"
+          func_count=$(jq '.data[0].totals.functions.count' fastlane/code_coverage.json)
+          func_covered=$(jq '.data[0].totals.functions.covered' fastlane/code_coverage.json)
+          func_percent=$(jq '.data[0].totals.functions.percent' fastlane/code_coverage.json)
+          echo -e "\t count  : $func_count"
+          echo -e "\t covered: $func_covered"
+          echo -e "\t percent: $func_percent"
+          if [ "$func_percent" -lt "90" ]; then
+            echo -e "\t\t FAILED ❌"
+          else
+            echo -e "\n\t\t PASSED ✅"
+          fi
+
+
+  Job_Completition:
+    name: Completition
+    runs-on: RoVaMx
+    needs: [
+      Job_B
+    ]
+    steps:
+
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "‼️ TestPackage Completed"
+            }
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  #
+  # Fail Jobs
+  #
+  Job_A_Fail:
+    name: Unit Test Fail
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+
+      - name: Run unit test
+        shell: bash
+        run: |
+         echo "Running"
+
+  Job_B_Fail:
+    name: Code Coverage Fail
+    runs-on: RoVaMx
+    needs: [
+      Job_B
+    ]
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+
+      - name: Run unit test
+        shell: bash
+        run: |
+         echo "Running"
