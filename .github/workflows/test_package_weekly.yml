@@ -1,0 +1,459 @@
+#
+# Github Setup
+#
+name: Test Package Weekly
+
+on:
+  schedule:
+    - cron:  '0 10 * * 6'  # Every Saturday at 10:00:00    
+    
+env:
+
+  MGS_HEADER: "RoVa_Log Package Test"
+  MGS_HEADER_CC_FAIL: "RoVa_Log Code Coverage Fail"
+  MGS_HEADER_UT_FAIL: "RoVa_Log Unit Test Fail"
+  MSG_REPO: "*Repo:*\\n<https://github.com/RoVaMx/RoVa-Log|RoVaMx/RoVa-Log>"
+  MGS_VERSION: "*Version:*\\n${{ vars.CURRENT_VERSION }}"
+  MGS_WORKFLOW: "*Workflow:*\\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|link>"
+  MGS_EXP_CC_L: "*Expected:*\\n${{ vars.CODE_COVERAGE_LINES_MIN }}"
+  MGS_EXP_CC_F: "*Expected:*\\n${{ vars.CODE_COVERAGE_FUNCTIONS_MIN }}"
+  MGS_EXP_CC_I: "*Expected:*\\n${{ vars.CODE_COVERAGE_INSTANTIATIONS_MIN }}"
+  
+jobs:
+
+  #
+  # Jobs
+  #
+  Job_A:
+    name: Run Unit Test
+    runs-on: RoVaMx
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Run unit test
+        shell: bash
+        run: |
+         fastlane test_package
+
+      - name: Prepare Code Coderage Package
+        shell: bash
+        run: |
+          ls -la fastlane/build/x86_64-apple-macosx/debug/codecov
+          cp fastlane/build/x86_64-apple-macosx/debug/codecov/RoVa-Log.json fastlane/build/code_coverage.json
+          ls -la fastlane/build
+
+      - name: Upload Code Coverage Package  Artifact
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: code_coverage_artifact
+          path: fastlane/build/code_coverage.json
+          if-no-files-found: error
+
+  Job_B_1:
+    name: Lines Code Coverage
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Download Code Coverage Package Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: code_coverage_artifact
+          path: fastlane
+
+      - name: Validate 
+        shell: bash
+        run: |
+          ls -la fastlane
+          echo "LINES"
+          lines_count=$(jq '.data[0].totals.lines.count' fastlane/code_coverage.json)
+          lines_covered=$(jq '.data[0].totals.lines.covered' fastlane/code_coverage.json)
+          lines_percent=$(jq '.data[0].totals.lines.percent' fastlane/code_coverage.json)
+          echo -e "\t count  : $lines_count"
+          echo -e "\t covered: $lines_covered"
+          echo -e "\t percent: $lines_percent"
+          if [ "$lines_percent" -lt "${{ vars.CODE_COVERAGE_LINES_MIN }}" ]; then
+            echo -e "\n\t\t FAILED ❌ → expceted = ${{ vars.CODE_COVERAGE_LINES_MIN }} "
+            exit 1
+          else
+            echo -e "\n\t\t PASSED ✅"
+          fi
+
+  Job_B_2:
+    name: Function Code Coverage
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Download Code Coverage Package Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: code_coverage_artifact
+          path: fastlane
+
+      - name: Validate 
+        shell: bash
+        run: |
+          ls -la fastlane
+          echo "FUNCTIONS"
+          func_count=$(jq '.data[0].totals.functions.count' fastlane/code_coverage.json)
+          func_covered=$(jq '.data[0].totals.functions.covered' fastlane/code_coverage.json)
+          func_percent=$(jq '.data[0].totals.functions.percent' fastlane/code_coverage.json)
+          echo -e "\t count  : $func_count"
+          echo -e "\t covered: $func_covered"
+          echo -e "\t percent: $func_percent"
+          if [ "$func_percent" -lt "${{ vars.CODE_COVERAGE_FUNCTIONS_MIN }}" ]; then
+            echo -e "\t\t FAILED ❌ → expceted = ${{ vars.CODE_COVERAGE_FUNCTIONS_MIN }} "
+            exit 1
+          else
+            echo -e "\n\t\t PASSED ✅"
+          fi
+
+  Job_B_3:
+    name: Instantiations Code Coverage
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Download Code Coverage Package Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: code_coverage_artifact
+          path: fastlane
+
+      - name: Validate 
+        shell: bash
+        run: |
+          ls -la fastlane
+          echo "FUNCTIONS"
+          inst_count=$(jq '.data[0].totals.instantiations.count' fastlane/code_coverage.json)
+          inst_covered=$(jq '.data[0].totals.instantiations.covered' fastlane/code_coverage.json)
+          inst_percent=$(jq '.data[0].totals.instantiations.percent' fastlane/code_coverage.json)
+          echo -e "\t count  : $inst_count"
+          echo -e "\t covered: $inst_covered"
+          echo -e "\t percent: $inst_percent"
+          if [ "$inst_percent" -lt "${{ vars.CODE_COVERAGE_INSTANTIATIONS_MIN }}" ]; then
+            echo -e "\t\t FAILED ❌ → expceted = ${{ vars.CODE_COVERAGE_INSTANTIATIONS_MIN }}"
+            exit 1
+          else
+            echo -e "\n\t\t PASSED ✅"
+          fi
+        
+  #
+  # Job Completition
+  #
+
+  Job_Completition:
+    name: Completition
+    runs-on: RoVaMx
+    needs: [
+      Job_B_1,
+      Job_B_2,
+      Job_B_3
+    ]
+    steps:
+
+      - name: 📡 Send Message to Slack channel ( rovamx-monitor )
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'rovamx-monitor'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ env.MGS_HEADER }}: ✅",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MSG_REPO }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_VERSION }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_WORKFLOW }}"
+                    }
+                  ]
+                }
+              ]
+            }
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+  #
+  # Fail Jobs
+  #
+  Job_A_Fail:
+    name: Unit Test Fail
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+
+      - name: 📡 Send Message to Slack channel ( rovamx-monitor )
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'rovamx-monitor-fail'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ env.MGS_HEADER_UT_FAIL }}: 🛑",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MSG_REPO }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_VERSION }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_WORKFLOW }}"
+                    }
+                  ]
+                }
+              ]
+            }
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+  Job_B_1_Fail:
+    name: Lines Coverage Fail
+    runs-on: RoVaMx
+    needs: [
+      Job_B_1
+    ]
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+
+      - name: 📡 Send Message to Slack channel ( rovamx-monitor )
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'rovamx-monitor-fail'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ env.MGS_HEADER_CC_FAIL }}: 🛑 → Lines",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MSG_REPO }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_EXP_CC_L }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_VERSION }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_WORKFLOW }}"
+                    }
+                  ]
+                }
+              ]
+            }
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+  Job_B_2_Fail:
+    name: Function Coverage Fail
+    runs-on: RoVaMx
+    needs: [
+      Job_B_2
+    ]
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+
+      - name: 📡 Send Message to Slack channel ( rovamx-monitor )
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'rovamx-monitor-fail'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ env.MGS_HEADER_CC_FAIL }}: 🛑 → Functions",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MSG_REPO }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_EXP_CC_F }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_VERSION }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_WORKFLOW }}"
+                    }
+                  ]
+                }
+              ]
+            }
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+  Job_B_3_Fail:
+    name: Instantiations Coverage Fail
+    runs-on: RoVaMx
+    needs: [
+      Job_B_3
+    ]
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+
+      - name: 📡 Send Message to Slack channel ( rovamx-monitor )
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'rovamx-monitor-fail'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ env.MGS_HEADER_CC_FAIL }}: 🛑 → Instantiations",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MSG_REPO }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_EXP_CC_I }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_VERSION }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_WORKFLOW }}"
+                    }
+                  ]
+                }
+              ]
+            }
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
