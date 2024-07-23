@@ -163,9 +163,9 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v1.26.0
         with:
-      # Slack channel id, channel name, or user id to post message.
+        # Slack channel id, channel name, or user id to post message.
           # See also: https://api.slack.com/methods/chat.postMessage#channels
-          channel-id: 'C07DCT33R9U'
+          channel-id: 'rovamx-monitor'
           # For posting a rich message using Block Kit
           payload: |
             {
