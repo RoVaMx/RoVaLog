@@ -184,10 +184,6 @@ jobs:
                     {
                       "type": "mrkdwn",
                       "text": "*Repo:*\n<https://github.com/RoVaMx/RoVa-Log|RoVaMx/RoVa-Log>"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Created by:*\n<https://github.com/pelusoBuendia01|pelusoBuendia01>"
                     }
                   ]
                 },
