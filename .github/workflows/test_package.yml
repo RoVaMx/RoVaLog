@@ -5,6 +5,9 @@ name: Test Package
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron:  '0 10 * * 6'  # Every Saturday at 10:00:00
+    - cron:  '*/5 * * * *' # Every 5 minutes
 
 env:
 
