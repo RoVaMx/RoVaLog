@@ -200,7 +200,7 @@ jobs:
                     },
                     {
                       "type": "mrkdwn",
-                      "text": "*Workflow:*\n<https://github.com/pelusoBuendia01|🔗 link>"
+                      "text": "*Workflow:*\n<https://github.com/RoVaMx/RoVa-Log/actions/runs/10052540051|🔗 link>"
                     }
                   ]
                 }
