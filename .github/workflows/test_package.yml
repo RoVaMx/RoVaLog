@@ -163,13 +163,25 @@ jobs:
         id: slack
         uses: slackapi/slack-github-action@v1.26.0
         with:
+      # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          channel-id: 'C07DCT33R9U'
+          # For posting a rich message using Block Kit
           payload: |
             {
-              "text": "‼️ TestPackage Completed"
+              "text": "‼️ TestPackage Completed : ${{ job.status }}\n${{ github.event.head_commit.url }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "GitHub Action build result: ${{ job.status }}"
+                  }
+                }
+              ]
             }
     env:
-      SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_SLACK }}
-
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
   #
   # Fail Jobs
   #
