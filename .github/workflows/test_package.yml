@@ -17,7 +17,6 @@ env:
   MGS_EXP_CC_L: "*Expected:*\\n${{ vars.CODE_COVERAGE_LINES_MIN }}"
   MGS_EXP_CC_F: "*Expected:*\\n${{ vars.CODE_COVERAGE_FUNCTIONS_MIN }}"
   MGS_EXP_CC_I: "*Expected:*\\n${{ vars.CODE_COVERAGE_INSTANTIATIONS_MIN }}"
-  MGS_CUR_CC: "*Current:*\\n"
   
 jobs:
 
@@ -315,10 +314,6 @@ jobs:
                     {
                       "type": "mrkdwn",
                       "text": "${{ env.MGS_EXP_CC_L }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "${{ env.MGS_CUR_CC }} : XXX?"
                     }
                   ]
                 },
@@ -380,10 +375,6 @@ jobs:
                     {
                       "type": "mrkdwn",
                       "text": "${{ env.MGS_EXP_CC_F }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "${{ env.MGS_CUR_CC }} : XXX?"
                     }
                   ]
                 },
@@ -445,10 +436,6 @@ jobs:
                     {
                       "type": "mrkdwn",
                       "text": "${{ env.MGS_EXP_CC_I }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "${{ env.MGS_CUR_CC }} : XXX?"
                     }
                   ]
                 },
