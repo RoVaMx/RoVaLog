@@ -1,0 +1,23 @@
+#
+# Github Setup
+#
+name: Test Package Weekly
+
+on:
+  schedule:
+    - cron:  '*/5 * * * *'  # Every 5 Min
+      
+jobs:
+
+  #
+  # Jobs
+  #
+  Job_A:
+    name: Run Unit Test
+    runs-on: RoVaMx
+    steps:
+
+      - name: Prepare Code Coderage Package
+        shell: bash
+        run: |
+          echo "Message"
