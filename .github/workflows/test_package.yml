@@ -6,6 +6,13 @@ name: Test Package
 on:
   workflow_dispatch:
 
+env:
+
+  MGS_HEADER: "RoVa_Log Package Test"
+  MSG_REPO: "*Repo:*\n<https://github.com/RoVaMx/RoVa-Log|RoVaMx/RoVa-Log>"
+  MGS_VERSION: "*Version:*\n${{ vars.CURRENT_VERSION }}"
+  MGS_WORKFLOW: "*Workflow:*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|link>"
+
 jobs:
 
   #
@@ -151,7 +158,6 @@ jobs:
             echo -e "\n\t\t PASSED ✅"
           fi
 
-
   Job_Completition:
     name: Completition
     runs-on: RoVaMx
@@ -162,14 +168,11 @@ jobs:
     ]
     steps:
 
-      - name: Post to a Slack channel
+      - name: 📡 Send Message to Slack channel ( rovamx-monitor )
         id: slack
         uses: slackapi/slack-github-action@v1.26.0
         with:
-        # Slack channel id, channel name, or user id to post message.
-          # See also: https://api.slack.com/methods/chat.postMessage#channels
           channel-id: 'rovamx-monitor'
-          # For posting a rich message using Block Kit
           payload: |
             {
               "blocks": [
@@ -177,7 +180,7 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "RoVa_Log Package Test: ✅",
+                    "text": "${{ env.MGS_HEADER }}: ✅",
                     "emoji": true
                   }
                 },
@@ -186,7 +189,7 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Repo:*\n<https://github.com/RoVaMx/RoVa-Log|RoVaMx/RoVa-Log>"
+                      "text": "${{ env.MSG_REPO }}"
                     }
                   ]
                 },
@@ -195,11 +198,11 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Version:*\n${{ vars.CURRENT_VERSION }}"
+                      "text": "${{ env.MGS_VERSION }}"
                     },
                     {
                       "type": "mrkdwn",
-                      "text": "*Workflow:*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|🔗 link>"
+                      "text": "${{ env.MGS_WORKFLOW }}"
                     }
                   ]
                 }
@@ -219,10 +222,48 @@ jobs:
     if: ${{ always() && contains(needs.*.result, 'failure') }}
     steps:
 
-      - name: Run unit test
-        shell: bash
-        run: |
-         echo "Running"
+      - name: 📡 Send Message to Slack channel ( rovamx-monitor )
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'rovamx-monitor-fail'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ env.MGS_HEADER }}: 🛑 → UNIT TEST FAIL",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MSG_REPO }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_VERSION }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_WORKFLOW }}"
+                    }
+                  ]
+                }
+              ]
+            }
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
   Job_B_1_Fail:
     name: Lines Coverage Fail
@@ -233,10 +274,48 @@ jobs:
     if: ${{ always() && contains(needs.*.result, 'failure') }}
     steps:
 
-      - name: Run unit test
-        shell: bash
-        run: |
-         echo "Running"
+      - name: 📡 Send Message to Slack channel ( rovamx-monitor )
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'rovamx-monitor-fail'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ env.MGS_HEADER }}: 🛑 → LINES CODE COVERAGE FAIL",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MSG_REPO }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_VERSION }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_WORKFLOW }}"
+                    }
+                  ]
+                }
+              ]
+            }
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
   Job_B_2_Fail:
     name: Function Coverage Fail
@@ -247,10 +326,48 @@ jobs:
     if: ${{ always() && contains(needs.*.result, 'failure') }}
     steps:
 
-      - name: Run unit test
-        shell: bash
-        run: |
-         echo "Running"
+      - name: 📡 Send Message to Slack channel ( rovamx-monitor )
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'rovamx-monitor-fail'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ env.MGS_HEADER }}: 🛑 → FUNCTION CODE COVERAGE FAIL",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MSG_REPO }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_VERSION }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_WORKFLOW }}"
+                    }
+                  ]
+                }
+              ]
+            }
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
   Job_B_3_Fail:
     name: Instantiations Coverage Fail
@@ -261,7 +378,45 @@ jobs:
     if: ${{ always() && contains(needs.*.result, 'failure') }}
     steps:
 
-      - name: Run unit test
-        shell: bash
-        run: |
-         echo "Running"
+      - name: 📡 Send Message to Slack channel ( rovamx-monitor )
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: 'rovamx-monitor-fail'
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ env.MGS_HEADER }}: 🛑 → INSTANTIATION CODE COVERAGE FAIL",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MSG_REPO }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_VERSION }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_WORKFLOW }}"
+                    }
+                  ]
+                }
+              ]
+            }
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
