@@ -174,7 +174,7 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "RoVa_Log Package Test: ",
+                    "text": "RoVa_Log Package Test: ✅",
                     "emoji": true
                   }
                 },
