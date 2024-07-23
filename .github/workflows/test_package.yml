@@ -192,7 +192,7 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Version:*\n${{ env.CURRENT_VERSION }}"
+                      "text": "*Version:*\n${{ vars.CURRENT_VERSION }}"
                     },
                     {
                       "type": "mrkdwn",
