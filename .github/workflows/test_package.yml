@@ -14,7 +14,11 @@ env:
   MSG_REPO: "*Repo:*\\n<https://github.com/RoVaMx/RoVa-Log|RoVaMx/RoVa-Log>"
   MGS_VERSION: "*Version:*\\n${{ vars.CURRENT_VERSION }}"
   MGS_WORKFLOW: "*Workflow:*\\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|link>"
-
+  MGS_EXP_CC_L: "*Expected:*\\n${{ vars.CODE_COVERAGE_LINES_MIN }}"
+  MGS_EXP_CC_F: "*Expected:*\\n${{ vars.CODE_COVERAGE_FUNCTIONS_MIN }}"
+  MGS_EXP_CC_I: "*Expected:*\\n${{ vars.CODE_COVERAGE_INSTANTIATIONS_MIN }}"
+  MGS_CUR_CC: "*Current:*\\n"
+  
 jobs:
 
   #
@@ -310,6 +314,19 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
+                      "text": "${{ env.MGS_EXP_CC_L }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_CUR_CC }} : XXX?"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
                       "text": "${{ env.MGS_VERSION }}"
                     },
                     {
@@ -362,6 +379,19 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
+                      "text": "${{ env.MGS_EXP_CC_F }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_CUR_CC }} : XXX?"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
                       "text": "${{ env.MGS_VERSION }}"
                     },
                     {
@@ -406,6 +436,19 @@ jobs:
                     {
                       "type": "mrkdwn",
                       "text": "${{ env.MSG_REPO }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_EXP_CC_I }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ env.MGS_CUR_CC }} : XXX?"
                     }
                   ]
                 },
