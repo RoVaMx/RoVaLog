@@ -9,9 +9,9 @@ on:
 env:
 
   MGS_HEADER: "RoVa_Log Package Test"
-  MSG_REPO: "*Repo:*\n<https://github.com/RoVaMx/RoVa-Log|RoVaMx/RoVa-Log>"
-  MGS_VERSION: "*Version:*\n${{ vars.CURRENT_VERSION }}"
-  MGS_WORKFLOW: "*Workflow:*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|link>"
+  MSG_REPO: "*Repo:*\\n<https://github.com/RoVaMx/RoVa-Log|RoVaMx/RoVa-Log>"
+  MGS_VERSION: "*Version:*\\n${{ vars.CURRENT_VERSION }}"
+  MGS_WORKFLOW: "*Workflow:*\\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|link>"
 
 jobs:
 
