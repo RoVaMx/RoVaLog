@@ -9,6 +9,8 @@ on:
 env:
 
   MGS_HEADER: "RoVa_Log Package Test"
+  MGS_HEADER_CC_FAIL: "RoVa_Log Code Coverage Fail"
+  MGS_HEADER_UT_FAIL: "RoVa_Log Unit Test Fail"
   MSG_REPO: "*Repo:*\\n<https://github.com/RoVaMx/RoVa-Log|RoVaMx/RoVa-Log>"
   MGS_VERSION: "*Version:*\\n${{ vars.CURRENT_VERSION }}"
   MGS_WORKFLOW: "*Workflow:*\\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|link>"
@@ -238,7 +240,7 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ env.MGS_HEADER }}: 🛑 → UNIT TEST FAIL",
+                    "text": "${{ env.MGS_HEADER_UT_FAIL }}: 🛑",
                     "emoji": true
                   }
                 },
@@ -290,7 +292,7 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ env.MGS_HEADER }}: 🛑 → LINES CODE COVERAGE FAIL",
+                    "text": "${{ env.MGS_HEADER_CC_FAIL }}: 🛑 → Lines",
                     "emoji": true
                   }
                 },
@@ -342,7 +344,7 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ env.MGS_HEADER }}: 🛑 → FUNCTION CODE COVERAGE FAIL",
+                    "text": "${{ env.MGS_HEADER_CC_FAIL }}: 🛑 → Functions",
                     "emoji": true
                   }
                 },
@@ -394,7 +396,7 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ env.MGS_HEADER }}: 🛑 → INSTANTIATION CODE COVERAGE FAIL",
+                    "text": "${{ env.MGS_HEADER_CC_FAIL }}: 🛑 → Instantiations",
                     "emoji": true
                   }
                 },
