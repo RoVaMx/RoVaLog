@@ -6,9 +6,6 @@ name: Test Package
 on:
   workflow_dispatch:
 
-env:
-  SLACK_H_COMPLETE: '{ "type": "header", "text": { "type": "plain_text", ":warning: Test Package Completed" } }'
-
 jobs:
 
   #
@@ -36,7 +33,7 @@ jobs:
           cp fastlane/build/x86_64-apple-macosx/debug/codecov/RoVa-Log.json fastlane/build/code_coverage.json
           ls -la fastlane/build
 
-      - name: Upload Code Coverage Package Artifacts
+      - name: Upload Code Coverage Package  Artifact
         uses: actions/upload-artifact@v4.3.4
         with:
           name: code_coverage_artifact
@@ -152,27 +149,6 @@ jobs:
           fi
 
 
-#  Job_Completition:
-#    name: Completition
-#    runs-on: RoVaMx
-#    needs: [
-#      Job_B_1,
-#      Job_B_2,
-#      Job_B_3
-#    ]
-#    steps:
-#
-#      - name: Post to a Slack channel
-#        id: slack
-#        uses: slackapi/slack-github-action@v1.26.0
-#        with:
-#          payload: |
-#           # {
-#           #   "text": "‼️ TestPackage Completed"
-#           # }
-#    env:
-#      SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_SLACK }}
-
   Job_Completition:
     name: Completition
     runs-on: RoVaMx
@@ -183,9 +159,16 @@ jobs:
     ]
     steps:
 
-      - name: Send Slack Message
-        run: |
-          curl -X POST -H 'Content-type: application/json' --data '{ "blocks": [ ${{ env.SLACK_H_COMPLETE }} ] } ' ${{ secrets.WEBHOOK_SLACK }}
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "‼️ TestPackage Completed"
+            }
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.WEBHOOK_SLACK }}
 
   #
   # Fail Jobs
