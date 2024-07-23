@@ -169,14 +169,40 @@ jobs:
           # For posting a rich message using Block Kit
           payload: |
             {
-              "text": "‼️ TestPackage Completed : ${{ job.status }}\n${{ github.event.head_commit.url }}",
               "blocks": [
                 {
-                  "type": "section",
+                  "type": "header",
                   "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Action build result: ${{ job.status }}"
+                    "type": "plain_text",
+                    "text": "RoVa_Log Package Test: ",
+                    "emoji": true
                   }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repo:*\n<https://github.com/RoVaMx/RoVa-Log|RoVaMx/RoVa-Log>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Created by:*\n<https://github.com/pelusoBuendia01|pelusoBuendia01>"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Version:*\n1.0.0"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Workflow:*\n<https://github.com/pelusoBuendia01|🔗 link>"
+                    }
+                  ]
                 }
               ]
             }
