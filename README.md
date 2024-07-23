@@ -125,3 +125,7 @@ classDiagram
     RoVa_LogMgr-->RoVa_LogLevel : use
     RoVa_LogMgr-->RoVa_LogData : use
 ```
+
+## Documentation
+
+- [Workflows](./doc/workflows.md)
