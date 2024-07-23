@@ -70,8 +70,9 @@ jobs:
           echo -e "\t count  : $lines_count"
           echo -e "\t covered: $lines_covered"
           echo -e "\t percent: $lines_percent"
-          if [ "$lines_percent" -lt "101" ]; then
+          if [ "$lines_percent" -lt "${{ vars.CODE_COVERAGE_LINES_MIN }}" ]; then
             echo -e "\n\t\t FAILED ❌"
+            exit 1
           else
             echo -e "\n\t\t PASSED ✅"
           fi
@@ -106,8 +107,9 @@ jobs:
           echo -e "\t count  : $func_count"
           echo -e "\t covered: $func_covered"
           echo -e "\t percent: $func_percent"
-          if [ "$func_percent" -lt "90" ]; then
+          if [ "$func_percent" -lt "${{ vars.CODE_COVERAGE_FUNCTIONS_MIN }}" ]; then
             echo -e "\t\t FAILED ❌"
+            exit 1
           else
             echo -e "\n\t\t PASSED ✅"
           fi
@@ -142,8 +144,9 @@ jobs:
           echo -e "\t count  : $inst_count"
           echo -e "\t covered: $inst_covered"
           echo -e "\t percent: $inst_percent"
-          if [ "$inst_percent" -lt "90" ]; then
+          if [ "$inst_percent" -lt "${{ vars.CODE_COVERAGE_INSTANTIATIONS_MIN }}" ]; then
             echo -e "\t\t FAILED ❌"
+            exit 1
           else
             echo -e "\n\t\t PASSED ✅"
           fi
