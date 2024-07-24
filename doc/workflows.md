@@ -1,6 +1,6 @@
 ## [⬅️](./../README.md) Workflows
 
-### Manual
+### Manual 
 
 #### [Test Package](https://github.com/RoVaMx/RoVa-Log/actions/workflows/test_package.yml)
 
