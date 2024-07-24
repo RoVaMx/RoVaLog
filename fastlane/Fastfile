@@ -1,0 +1,63 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+
+  #
+  # BEFORE ALL
+  # 
+
+  before_all do |lane, options|
+    xcode_select("/Applications/Xcode15.4.app")
+  end
+
+  #
+  # PRIVATE LANES
+  # 
+
+  desc "Test With Get Code Coverage"
+  private_lane :test_with_code_coverage do |options|
+    sh("swift", "test","--enable-code-coverage", "--scratch-path","build")
+  end
+
+  desc "Get Code Coverage Path"
+  private_lane :get_code_coverage_path do |options|
+    code_coverage_path = sh("swift", "test", "--show-codecov-path",log: false)    
+    code_coverage_path
+  end
+
+  desc "EvaluateCode Coverage"
+  private_lane :evaluate_code_coverage do |options|
+    cc_json_path = "/build/#{options[:cc_path].split('.build/')[1]}"
+    puts "================================================"
+    puts "📁 CODE COVERAGE JSON FILE: "  
+    puts "#{cc_json_path}"
+    puts "================================================"    
+  end
+
+  #
+  # TEST LANES
+  # 
+
+  desc "Test RoVaLog Swift Pakage"
+  lane :test_package do |options|
+    test_with_code_coverage()
+    options[:cc_path] = get_code_coverage_path()
+    evaluate_code_coverage(options)
+  end
+
+end

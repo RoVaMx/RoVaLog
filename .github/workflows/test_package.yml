@@ -1,12 +1,154 @@
+#
+# Github Setup
+#
 name: Test Package
+
 on:
   workflow_dispatch:
+  
 jobs:
-  DownloadCertificates:
-    runs-on: self-hosted
+
+  #
+  # Jobs
+  #
+  Job_A:
+    name: Run Unit Test
+    runs-on: RoVaMx
     steps:
 
-      - name: Testing
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Run unit test
         shell: bash
         run: |
-          echo "Testing"
+         fastlane test_package
+
+      - name: Prepare Code Coderage Package
+        shell: bash
+        run: |
+          ls -la fastlane/build/x86_64-apple-macosx/debug/codecov
+          cp fastlane/build/x86_64-apple-macosx/debug/codecov/RoVa-Log.json fastlane/build/code_coverage.json
+          ls -la fastlane/build
+
+      - name: Upload Code Coverage Package  Artifact
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: code_coverage_artifact
+          path: fastlane/build/code_coverage.json
+          if-no-files-found: error
+
+  Job_B_1:
+    name: Lines Code Coverage
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Download Code Coverage Package Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: code_coverage_artifact
+          path: fastlane
+
+      - name: Validate 
+        shell: bash
+        run: |
+          ls -la fastlane
+          echo "LINES"
+          lines_count=$(jq '.data[0].totals.lines.count' fastlane/code_coverage.json)
+          lines_covered=$(jq '.data[0].totals.lines.covered' fastlane/code_coverage.json)
+          lines_percent=$(jq '.data[0].totals.lines.percent' fastlane/code_coverage.json)
+          echo -e "\t count  : $lines_count"
+          echo -e "\t covered: $lines_covered"
+          echo -e "\t percent: $lines_percent"
+          if [ "$lines_percent" -lt "${{ vars.CODE_COVERAGE_LINES_MIN }}" ]; then
+            echo -e "\n\t\t FAILED ❌ → expceted = ${{ vars.CODE_COVERAGE_LINES_MIN }} "
+            exit 1
+          else
+            echo -e "\n\t\t PASSED ✅"
+          fi
+
+  Job_B_2:
+    name: Function Code Coverage
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Download Code Coverage Package Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: code_coverage_artifact
+          path: fastlane
+
+      - name: Validate 
+        shell: bash
+        run: |
+          ls -la fastlane
+          echo "FUNCTIONS"
+          func_count=$(jq '.data[0].totals.functions.count' fastlane/code_coverage.json)
+          func_covered=$(jq '.data[0].totals.functions.covered' fastlane/code_coverage.json)
+          func_percent=$(jq '.data[0].totals.functions.percent' fastlane/code_coverage.json)
+          echo -e "\t count  : $func_count"
+          echo -e "\t covered: $func_covered"
+          echo -e "\t percent: $func_percent"
+          if [ "$func_percent" -lt "${{ vars.CODE_COVERAGE_FUNCTIONS_MIN }}" ]; then
+            echo -e "\t\t FAILED ❌ → expceted = ${{ vars.CODE_COVERAGE_FUNCTIONS_MIN }} "
+            exit 1
+          else
+            echo -e "\n\t\t PASSED ✅"
+          fi
+
+  Job_B_3:
+    name: Instantiations Code Coverage
+    runs-on: RoVaMx
+    needs: [
+      Job_A
+    ]
+    steps:
+
+      - uses: actions/checkout@v4
+        name: Checkout
+        with:
+          fetch-depth: 0
+
+      - name: Download Code Coverage Package Artifact
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: code_coverage_artifact
+          path: fastlane
+
+      - name: Validate 
+        shell: bash
+        run: |
+          ls -la fastlane
+          echo "FUNCTIONS"
+          inst_count=$(jq '.data[0].totals.instantiations.count' fastlane/code_coverage.json)
+          inst_covered=$(jq '.data[0].totals.instantiations.covered' fastlane/code_coverage.json)
+          inst_percent=$(jq '.data[0].totals.instantiations.percent' fastlane/code_coverage.json)
+          echo -e "\t count  : $inst_count"
+          echo -e "\t covered: $inst_covered"
+          echo -e "\t percent: $inst_percent"
+          if [ "$inst_percent" -lt "${{ vars.CODE_COVERAGE_INSTANTIATIONS_MIN }}" ]; then
+            echo -e "\t\t FAILED ❌ → expceted = ${{ vars.CODE_COVERAGE_INSTANTIATIONS_MIN }}"
+            exit 1
+          else
+            echo -e "\n\t\t PASSED ✅"
+          fi
+        
+  
