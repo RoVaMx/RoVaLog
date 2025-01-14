@@ -1,4 +1,4 @@
-# RoVa_Log
+# RoVa_Log (1.1.0)
 
 Private Swift Package for estandar terminal debug log
 
