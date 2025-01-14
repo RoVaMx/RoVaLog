@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "RoVa-Log",
+    name: "RoVaLog",
     products: [
         .library(
             name: "RoVa-Log",
