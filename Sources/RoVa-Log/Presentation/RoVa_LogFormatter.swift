@@ -9,11 +9,14 @@ import Foundation
 
 package struct RoVa_LogFormatter {
     
+    // Common Methods
     static let iconDebug: String = "🔎"
     static let iconInfo: String = "ℹ️"
     static let iconWarning: String = "⚠️"
     static let iconError: String = "❌"
     static let iconVerbose: String = "🗣️"
+    
+    // Package Icons
     static let iconUIInput: String = "👈"
     static let iconUIOutput: String = "📱"
     static let iconUISound: String = "🔊"
@@ -22,6 +25,14 @@ package struct RoVa_LogFormatter {
     static let iconAppConfConnection: String = "🔌"
     static let iconAppScene: String = "🌠"
     static let iconThread: String = "🧵"
+    
+    // TCA
+    static let iconTCAStore     : String = "🗄️"
+    static let iconTCAReducer   : String = "🌀"
+    static let iconTCAState     : String = "🗂️"
+    static let iconTCAAction    : String = "⚡"
+    static let iconTCADependency: String = "🧰"
+    
     private static var maxClassName: Int = 0
     private static var maxFuncName: Int = 0
 
