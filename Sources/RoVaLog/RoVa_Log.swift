@@ -9,7 +9,7 @@
 public protocol RoVa_Log {
 }
 
-// MARK: - Package Methods
+// MARK: - Utils Methods
 extension RoVa_Log {
 
     package static var className: String {
@@ -18,8 +18,8 @@ extension RoVa_Log {
 
 }
 
-// MARK: Package Methods
-public extension RoVa_Log {
+
+public extension RoVa_Log { // MARK: Common Methods
 
     func logDebug(_ function: String = #function,
                   _ line: Int = #line,
@@ -93,8 +93,8 @@ public extension RoVa_Log {
 
 }
 
-// MARK: Package Methods
-public extension RoVa_Log {
+
+public extension RoVa_Log { // MARK: Package Methods
 
     func logUIInput (_ function: String = #function,
                      _ line: Int = #line,
@@ -167,6 +167,65 @@ public extension RoVa_Log {
                       msg: String? = nil) {
         print(RoVa_LogFormatter.logText(
             RoVa_LogFormatter.iconAppScene,
+            Self.className,
+            function, line,
+            msg: msg
+        ))
+    }
+}
+
+
+public extension RoVa_Log { // MARK: TCA Methods
+    
+    func logStore(_ function: String = #function,
+                     _ line: Int = #line,
+                     msg: String? = nil) {
+        print(RoVa_LogFormatter.logText(
+            RoVa_LogFormatter.iconTCAStore,
+            Self.className,
+            function, line,
+            msg: msg
+        ))
+    }
+    
+    func logReducer(_ function: String = #function,
+                     _ line: Int = #line,
+                     msg: String? = nil) {
+        print(RoVa_LogFormatter.logText(
+            RoVa_LogFormatter.iconTCAReducer,
+            Self.className,
+            function, line,
+            msg: msg
+        ))
+    }
+    
+    func logState(_ function: String = #function,
+                     _ line: Int = #line,
+                     msg: String? = nil) {
+        print(RoVa_LogFormatter.logText(
+            RoVa_LogFormatter.iconTCAState,
+            Self.className,
+            function, line,
+            msg: msg
+        ))
+    }
+    
+    func logAction(_ function: String = #function,
+                     _ line: Int = #line,
+                     msg: String? = nil) {
+        print(RoVa_LogFormatter.logText(
+            RoVa_LogFormatter.iconTCAAction,
+            Self.className,
+            function, line,
+            msg: msg
+        ))
+    }
+    
+    func logDepenency(_ function: String = #function,
+                     _ line: Int = #line,
+                     msg: String? = nil) {
+        print(RoVa_LogFormatter.logText(
+            RoVa_LogFormatter.iconTCADependency,
             Self.className,
             function, line,
             msg: msg
