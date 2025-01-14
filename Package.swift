@@ -6,18 +6,17 @@ import PackageDescription
 let package = Package(
     name: "RoVaLog",
     products: [
-        .library(
-            name: "RoVa-Log",
-            targets: ["RoVa-Log"]
-        ),
-    ],
+           .library(
+               name: "RoVaLog",
+               targets: ["RoVaLog"])
+       ],
     targets: [
         .target(
-            name: "RoVa-Log"
+            name: "RoVaLog"
         ),
         .testTarget(
             name: "RoVa-LogTests",
-            dependencies: ["RoVa-Log"]
+            dependencies: ["RoVaLog"]
         ),
     ]
 )
